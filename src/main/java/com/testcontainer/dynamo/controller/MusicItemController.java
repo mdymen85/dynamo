@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.testcontainer.dynamo.dto.MusicItemDTO;
-import com.testcontainer.dynamo.model.MusicItem;
+import com.testcontainer.dynamo.model.Movie;
 import com.testcontainer.dynamo.service.MusicItemService;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class MusicItemController {
 	private final MusicItemService musicService;
 	
 	@RequestMapping(path = "/api/v1/musicitem", method = RequestMethod.GET)
-	public MusicItem getMusicItem(@RequestBody MusicItemDTO musicItemDTO) {
+	public Movie getMusicItem(@RequestBody MusicItemDTO musicItemDTO) {
 		return musicService.load(musicItemDTO.getArtist(), musicItemDTO.getSongTitle());
 	}
 	
