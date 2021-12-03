@@ -34,6 +34,32 @@ public class DynamoApplication {
 	public static void main(String[] args) throws IOException {
 		
 
+//      AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
+//      .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:8000", "us-west-2"))
+//      .build();
+//
+//  DynamoDB dynamoDB = new DynamoDB(client);
+//
+//  String tableName = "Test";
+//
+//  try {
+//      System.out.println("Attempting to create table; please wait...");
+//      Table table = dynamoDB.createTable(tableName,
+//          Arrays.asList(new KeySchemaElement("id", KeyType.HASH), // Partition
+//                                                                    // key
+//              new KeySchemaElement("surname", KeyType.RANGE)), // Sort key
+//          Arrays.asList(new AttributeDefinition("id", ScalarAttributeType.N),
+//              new AttributeDefinition("surname", ScalarAttributeType.S)),
+//          new ProvisionedThroughput(10L, 10L));
+//      table.waitForActive();
+//      System.out.println("Success.  Table status: " + table.getDescription().getTableStatus());
+//
+//  }
+//  catch (Exception e) {
+//      System.err.println("Unable to create table: ");
+//      System.err.println(e.getMessage());
+//  }
+		
 //        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
 //            .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:8000", "us-west-2"))
 //            .build();
