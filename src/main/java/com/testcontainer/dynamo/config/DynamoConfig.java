@@ -19,7 +19,7 @@ public class DynamoConfig {
 	@Bean(name = "amazonDynamoDB")
 	public AmazonDynamoDB createConnection() {
 		return AmazonDynamoDBClientBuilder.standard()
-		.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:8000", "us-west-2"))
+		.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:8000", "us-east-1"))
 		.build();		
 	}
 	
