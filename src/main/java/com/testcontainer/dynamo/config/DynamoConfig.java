@@ -12,7 +12,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 
-@Configuration
+//@Configuration
 @ComponentScan(basePackages = "com.testcontainer.dynamo.*")
 public class DynamoConfig {
 
@@ -37,12 +37,5 @@ public class DynamoConfig {
 	public ModelMapper modelMapper() {
 		return new ModelMapper();
 	}
-//	
-//	@Bean(name="entityManagerFactory")
-//	public LocalSessionFactoryBean sessionFactory() {
-//	    LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-//
-//	    return sessionFactory;
-//	} 
 	
 }
