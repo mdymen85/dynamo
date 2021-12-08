@@ -2,7 +2,6 @@ package com.testcontainer.dynamo.repository;
 
 import java.util.Arrays;
 
-import org.hamcrest.core.IsNull;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +12,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType;
 import com.testcontainer.dynamo.model.Movie;
 
@@ -31,19 +31,21 @@ public class MoviesRepository {
 	private final DynamoDB dynamoDb;
 	
 	public void save(Movie movie) {
-		this.existOrCreateTable();
-		log.info("Saveing... {}", movie);
+		this.createIfNotExists();
+		log.info("Saving... {}", movie);
 		this.mapper.save(movie);
 	}
 	
 	public Movie findByYearAndTitle(Integer year, String title) {
-		log.info("Loading movie from year {} and title {}", year, title);
+		log.info("Loading movie from year: {} and title: {}", year, title);
 		return mapper.load(Movie.class, year, title);
 	}
 	
-	private void existOrCreateTable() {
-		var table = dynamoDb.getTable(TABLE_NAME);
-		if (table. == null) {
+	private void createIfNotExists() {
+		try {
+			var table = dynamoDb.getTable(TABLE_NAME);
+			table.describe();
+		} catch (ResourceNotFoundException r) {
 			this.createTable();
 		}
 	}
@@ -52,11 +54,11 @@ public class MoviesRepository {
 		try {
 			System.out.println("Attempting to create table; please wait...");
 			Table table = dynamoDb.createTable(TABLE_NAME,
-	          Arrays.asList(new KeySchemaElement("id", KeyType.HASH), // Partition
+	          Arrays.asList(new KeySchemaElement("year", KeyType.HASH), // Partition
 	                                                                    // key
-	              new KeySchemaElement("surname", KeyType.RANGE)), // Sort key
-	          Arrays.asList(new AttributeDefinition("id", ScalarAttributeType.N),
-	              new AttributeDefinition("surname", ScalarAttributeType.S)),
+	              new KeySchemaElement("title", KeyType.RANGE)), // Sort key
+	          Arrays.asList(new AttributeDefinition("year", ScalarAttributeType.N),
+	              new AttributeDefinition("title", ScalarAttributeType.S)),
 	          new ProvisionedThroughput(10L, 10L));
 			table.waitForActive();
 			System.out.println("Success.  Table status: " + table.getDescription().getTableStatus());

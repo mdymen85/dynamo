@@ -29,13 +29,14 @@ public class MovieController {
 	public ResponseEntity<Movie> getMusicItem(@PathVariable("year") Integer year, @PathVariable("title") String title) {
 		log.info("Received year {} and title {} to load the movie", year, title);
 		return new ResponseEntity<>(musicService.load(year, title), HttpStatus.OK);
-	}	
+	}
 	
 	@RequestMapping(path = "/api/v1/movie", method = RequestMethod.POST)
-	public void save(@RequestBody MovieDTO movieDTO) {
+	public ResponseEntity<Void> save(@RequestBody MovieDTO movieDTO) {
 		var movie = this.modelMapper.map(movieDTO, Movie.class);		
 		log.info("Received request to save {}", movieDTO);
 		this.musicService.save(movie);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 }
