@@ -27,12 +27,15 @@ import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.testcontainer.dynamo.AbstractDynamoInit.InnerDynamoTestConfiguration;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Testcontainers
-//@RequiredArgsConstructor
 @ContextConfiguration(classes = InnerDynamoTestConfiguration.class)
+@Slf4j
 public class AbstractDynamoInit {
 
-	protected static Integer PORT = 8000;		
+	private static Integer PORT = 8000;
+	private static String AVAILABILITY_ZONE = "us-west-2";
 	
 	@Container
 	public static GenericContainer<?> dynamoDBLocal =
@@ -46,10 +49,18 @@ public class AbstractDynamoInit {
 	static class InnerDynamoTestConfiguration {
 
 		@Bean(name = "amazonDynamoDB")
-		public AmazonDynamoDB createConnection() {
+		public AmazonDynamoDB createConnection() {		
 			return AmazonDynamoDBClientBuilder.standard()
-			.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:" + dynamoDBLocal.getFirstMappedPort(), "us-west-2"))
+			.withEndpointConfiguration(new AwsClientBuilder
+					.EndpointConfiguration(generateUrl(), AVAILABILITY_ZONE))
 			.build();		
+		}
+		
+		private String generateUrl() {
+			return new StringBuilder("http://localhost")
+					.append(":")
+					.append(dynamoDBLocal.getFirstMappedPort())
+					.toString();
 		}
 
 		@Bean
@@ -82,7 +93,7 @@ public class AbstractDynamoInit {
 	      String tableName = "Movies";
 
 	      try {
-	          System.out.println("Attempting to create table; please wait...");
+	          log.info("Attempting to create table; please wait...");
 	          Table table = dynamoDB.createTable(tableName,
 	              Arrays.asList(new KeySchemaElement("year", KeyType.HASH), // Partition
 	                                                                        // key
@@ -91,11 +102,11 @@ public class AbstractDynamoInit {
 	                  new AttributeDefinition("title", ScalarAttributeType.S)),
 	              new ProvisionedThroughput(10L, 10L));
 	          table.waitForActive();
-	          System.out.println("Success.  Table status: " + table.getDescription().getTableStatus());
+	          log.info("Success.  Table status: " + table.getDescription().getTableStatus());
 
 	      }
 	      catch (Exception e) {
-	          System.err.println("Unable to create table: ");
+	          log.info("Unable to create table: ");
 	          System.err.println(e.getMessage());
 	      }
     }

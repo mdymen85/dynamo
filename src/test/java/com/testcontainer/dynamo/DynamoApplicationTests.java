@@ -1,5 +1,6 @@
 package com.testcontainer.dynamo;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -48,6 +49,13 @@ import com.testcontainer.dynamo.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Need to run with profile: test
+ * -Dspring.active.profile=test
+ * 
+ * @author Martin Dymenstein
+ *
+ */
 @SpringBootTest
 @Slf4j
 class DynamoApplicationTests extends AbstractDynamoInit {
@@ -71,8 +79,8 @@ class DynamoApplicationTests extends AbstractDynamoInit {
 	@Test
 	void createMovie() throws JsonMappingException, JsonProcessingException {
         this.createTable();
-		
-		var movieDTO = mapper.readValue("{\n"
+        
+        String jsonObject = "{\n"
 				+ "    \"year\":\"2023\",\n"
 				+ "    \"title\":\"Movie title\",\n"
 				+ "    \"info\": {\n"
@@ -80,7 +88,9 @@ class DynamoApplicationTests extends AbstractDynamoInit {
 				+ "        \"release_date\": \"2013-09-02T00:00:00Z\",\n"
 				+ "        \"actors\": [\"actor 1\",\"actor 2\"]\n"
 				+ "    }\n"
-				+ "}", MovieDTO.class);
+				+ "}";
+		
+		var movieDTO = mapper.readValue(jsonObject, MovieDTO.class);
 		
 		var movie = this.modelMapper.map(movieDTO, Movie.class);
 	
@@ -88,9 +98,8 @@ class DynamoApplicationTests extends AbstractDynamoInit {
 		
 		var movieLoaded = this.movieService.load(movie.getYear(), movie.getTitle());
 		
-		assertTrue(true);
-		
-		
+		assertEquals(movieDTO.getTitle(), movieLoaded.getTitle());
+		assertEquals(movieDTO.getYear(), movieLoaded.getYear());
 	}
 
 }

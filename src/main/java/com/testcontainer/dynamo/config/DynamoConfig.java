@@ -1,6 +1,7 @@
 package com.testcontainer.dynamo.config;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -17,11 +18,28 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 @Profile("!test")
 public class DynamoConfig {
 
+	@Value("${dynamodb.port:8000}")
+	private Integer port;
+	
+	@Value("${dynamodb.server:http://localhost}")
+	private String server;
+	
+	@Value("${aws.region:us-east-1}")
+	private String region;
+	
+	
 	@Bean(name = "amazonDynamoDB")
 	public AmazonDynamoDB createConnection() {
 		return AmazonDynamoDBClientBuilder.standard()
-		.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:8000", "us-east-1"))
+		.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(generateUrl(), region))
 		.build();		
+	}
+	
+	private String generateUrl() {
+		return new StringBuilder(server)
+				.append(":")
+				.append(port)
+				.toString();
 	}
 	
 	@Bean
