@@ -2,7 +2,6 @@ package com.testcontainer.dynamo.repository;
 
 import java.util.Arrays;
 
-import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.stereotype.Repository;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
@@ -19,7 +18,6 @@ import com.testcontainer.dynamo.model.Movie;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@EnableScan
 @Repository
 @RequiredArgsConstructor
 @Slf4j
