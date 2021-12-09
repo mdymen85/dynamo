@@ -5,12 +5,12 @@ This project aims to help someone to know a little code about DynamoDB, to know 
 I added the following dependency in pom.xml:
 
 ```
-		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-dynamodb -->
-		<dependency>
-		    <groupId>com.amazonaws</groupId>
-		    <artifactId>aws-java-sdk-dynamodb</artifactId>
-		    <version>1.12.120</version>
-		</dependency>
+<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-dynamodb -->
+<dependency>
+	<groupId>com.amazonaws</groupId>
+	<artifactId>aws-java-sdk-dynamodb</artifactId>
+	<version>1.12.120</version>
+</dependency>
 ```
 
 ## Docker
@@ -49,21 +49,15 @@ curl --location --request GET 'localhost:8080/api/v1/movie/2023/Movie title'
 
 ## Test Container
 
-```
-    <!-- https://mvnrepository.com/artifact/org.testcontainers/testcontainers -->
-		<dependency>
-		    <groupId>org.testcontainers</groupId>
-		    <artifactId>testcontainers</artifactId>
-		    <version>1.16.2</version>
-		    <scope>test</scope>
-		</dependency>
+It's necessary to add this dependency of **testcontainer** to run a docker container of **DynamoDB**. 
 
-		<!-- https://mvnrepository.com/artifact/org.testcontainers/junit-jupiter -->
-		<dependency>
-		    <groupId>org.testcontainers</groupId>
-		    <artifactId>junit-jupiter</artifactId>
-		    <version>1.16.2</version>
-		    <scope>test</scope>
-		</dependency>
+```
+<!-- https://mvnrepository.com/artifact/org.testcontainers/junit-jupiter -->
+<dependency>
+    <groupId>org.testcontainers</groupId>
+    <artifactId>junit-jupiter</artifactId>
+    <version>1.16.2</version>
+    <scope>test</scope>
+</dependency>
 
 ```
