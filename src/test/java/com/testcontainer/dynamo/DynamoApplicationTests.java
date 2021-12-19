@@ -21,18 +21,16 @@ import com.testcontainer.dynamo.service.MovieService;
  *
  */
 @SpringBootTest
-class DynamoApplicationTests extends AbstractDynamoInit {
+class DynamoApplicationTests extends AbstractDynamoInit {	
 	
 	@Autowired
-	private ObjectMapper mapper;
+	private MovieService movieService;		
 	
 	@Autowired
-	private MovieService movieService;
+	protected ModelMapper modelMapper;
 	
 	@Autowired
-	private ModelMapper modelMapper;
-
-	
+	protected ObjectMapper mapper;
 	
 	@BeforeAll
 	public static void init() {

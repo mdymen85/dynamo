@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.amazonaws.internal.http.JsonErrorCodeParser;
 import com.testcontainer.dynamo.dto.MovieDTO;
 import com.testcontainer.dynamo.model.Movie;
 import com.testcontainer.dynamo.service.MovieService;
@@ -26,7 +27,7 @@ public class MovieController {
 	private final ModelMapper modelMapper;
 	
 	@RequestMapping(path = "/api/v1/movie/{year}/{title}", method = RequestMethod.GET)
-	public ResponseEntity<Movie> getMusicItem(@PathVariable("year") Integer year, @PathVariable("title") String title) {
+	public ResponseEntity<Movie> getMusicItem(@PathVariable("year") Integer year, @PathVariable("title") String title) throws Exception {
 		log.info("Received year {} and title {} to load the movie", year, title);
 		return new ResponseEntity<>(musicService.load(year, title), HttpStatus.OK);
 	}

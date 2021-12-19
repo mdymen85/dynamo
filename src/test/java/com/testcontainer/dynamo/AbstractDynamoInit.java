@@ -40,8 +40,7 @@ public class AbstractDynamoInit {
 	@Container
 	public static GenericContainer<?> dynamoDBLocal =
 	    new GenericContainer<>("amazon/dynamodb-local:1.11.477")
-	        .withExposedPorts(PORT);
-	
+	        .withExposedPorts(PORT);	
 	
 	@Configuration
 	@ComponentScan(basePackages = "com.testcontainer.dynamo.*")
