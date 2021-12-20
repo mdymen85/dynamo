@@ -1,47 +1,39 @@
 package com.testcontainer.dynamo;
 
-import static org.junit.Assert.assertEquals;
-
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
-
 import com.testcontainer.dynamo.dto.MovieDTO;
-import com.testcontainer.dynamo.model.Movie;
-import com.testcontainer.dynamo.service.MovieService;
 
 import io.restassured.RestAssured;
 
-import static io.restassured.RestAssured.when;
-import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.with;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import static org.hamcrest.Matchers.hasItems;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = DynamoApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class DynamoControllerTests extends AbstractDynamoInit {
-
-	@Autowired
-	private MovieService movieService;
 	
 	@Autowired
 	protected ModelMapper modelMapper;
@@ -53,22 +45,45 @@ public class DynamoControllerTests extends AbstractDynamoInit {
 	private int localServerPort;
 	
     @BeforeEach
-    public void setRestAssuredPort() {
-       RestAssured.port = localServerPort;
+    public void restAssuredPort() {
+    	RestAssured.port = localServerPort;  
+   		this.createTable();
     }
-
+    
+	@BeforeAll
+	public static void init() {
+		dynamoDBLocal.start();
+	}
+    
 	@Test
-	public void saveMovieTest() throws JsonMappingException, JsonProcessingException {
-	//	createMovie();
+	public void saveMovieTest() throws JsonMappingException, JsonProcessingException {	
 		
-
+		var movie = createMovie();
 		
-		var x = given().basePath("/test").get("").then().statusCode(200);
-		int i = 0;
+		with()
+			.header("Content-Type","application/json")
+			.body(movie)
+			.when()
+			.post("/api/v1/movie")
+			.then()				
+			.statusCode(200);
+		
+		var x = given().get("/api/v1/movie/{year}/{movie}","2023","Movie title").getBody().asString();
+		
+		
+		given().get("/api/v1/movie/{year}/{movie}","2023","Movie title")
+			.then()
+			.assertThat()
+			.body("year", is(movie.getYear()))
+			.body("title", is(movie.getTitle()))
+			.body("info.directors", hasItems("Michael Perez", "Carl Harris"))
+			.body("info.releaseDate", equalTo("2013-09-02"))
+//			.body("info.releaseDate", is(movie.getInfo().getReleaseDate()))
+			.body("info.actors", hasItems("actor1", "actor2"));
 		
 	}
 	
-	void createMovie() throws JsonMappingException, JsonProcessingException {
+	private MovieDTO createMovie() throws JsonMappingException, JsonProcessingException {
         this.createTable();
         
         String jsonObject = "{\n"
@@ -83,9 +98,8 @@ public class DynamoControllerTests extends AbstractDynamoInit {
 		
 		var movieDTO = mapper.readValue(jsonObject, MovieDTO.class);
 		
-		var movie = this.modelMapper.map(movieDTO, Movie.class);
+		return movieDTO;
 	
-		this.movieService.save(movie);		
 	}
 	
 }

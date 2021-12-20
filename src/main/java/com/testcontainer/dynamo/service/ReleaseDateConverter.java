@@ -20,8 +20,8 @@ public class ReleaseDateConverter implements DynamoDBTypeConverter<String, Local
 	@Override
 	public LocalDate unconvert(String releaseDate) {
 		log.info("Converting string {} to LocalDate.", releaseDate);
-		var localDateTime = LocalDateTime.parse(releaseDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		return localDateTime.toLocalDate();
+		var date = LocalDate.parse(releaseDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		return date;
 	}
 
 }

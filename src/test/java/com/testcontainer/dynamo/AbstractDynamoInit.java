@@ -25,6 +25,7 @@ import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.testcontainer.dynamo.AbstractDynamoInit.InnerDynamoTestConfiguration;
 
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +75,9 @@ public class AbstractDynamoInit {
 
 		@Bean
 		public ObjectMapper objectMapper() {
-			return new ObjectMapper();
+			var mapper = new ObjectMapper();
+			mapper.registerModule(new JavaTimeModule());
+			return mapper;
 		}
 		
 		@Bean
@@ -92,6 +95,14 @@ public class AbstractDynamoInit {
 	      String tableName = "Movies";
 
 	      try {
+	    	  dynamoDB.listTables().forEach(t -> {
+	    		  
+	    		  if (t.getTableName().equals(tableName)) {
+	    			  return;
+	    		  }
+	    		  
+	    	  });
+	    	  
 	          log.info("Attempting to create table; please wait...");
 	          Table table = dynamoDB.createTable(tableName,
 	              Arrays.asList(new KeySchemaElement("year", KeyType.HASH), // Partition
