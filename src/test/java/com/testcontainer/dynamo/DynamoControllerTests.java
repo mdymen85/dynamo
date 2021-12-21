@@ -27,6 +27,8 @@ import static org.hamcrest.Matchers.equalTo;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.hasItems;
 
@@ -57,7 +59,7 @@ public class DynamoControllerTests extends AbstractDynamoInit {
     
 	@Test
 	public void saveMovieTest() throws JsonMappingException, JsonProcessingException {	
-		
+
 		var movie = createMovie();
 		
 		with()
@@ -68,18 +70,17 @@ public class DynamoControllerTests extends AbstractDynamoInit {
 			.then()				
 			.statusCode(200);
 		
-		var x = given().get("/api/v1/movie/{year}/{movie}","2023","Movie title").getBody().asString();
-		
+		var directors = movie.getInfo().getDirectors();
+		var actors = movie.getInfo().getActors();
 		
 		given().get("/api/v1/movie/{year}/{movie}","2023","Movie title")
 			.then()
 			.assertThat()
 			.body("year", is(movie.getYear()))
 			.body("title", is(movie.getTitle()))
-			.body("info.directors", hasItems("Michael Perez", "Carl Harris"))
-			.body("info.releaseDate", equalTo("2013-09-02"))
-//			.body("info.releaseDate", is(movie.getInfo().getReleaseDate()))
-			.body("info.actors", hasItems("actor1", "actor2"));
+			.body("info.directors", hasItems(directors.get(0), directors.get(1)))
+			.body("info.release_date", is(movie.getInfo().getReleaseDate().toString()))
+			.body("info.actors", hasItems(actors.get(0), actors.get(1)));
 		
 	}
 	
@@ -91,7 +92,7 @@ public class DynamoControllerTests extends AbstractDynamoInit {
 				+ "    \"title\":\"Movie title\",\n"
 				+ "    \"info\": {\n"
 				+ "        \"directors\": [\"Michael Perez\", \"Carl Harris\"],\n"
-				+ "        \"release_date\": \"2013-09-02T00:00:00Z\",\n"
+				+ "        \"release_date\": \"2013-09-02\",\n"
 				+ "        \"actors\": [\"actor 1\",\"actor 2\"]\n"
 				+ "    }\n"
 				+ "}";

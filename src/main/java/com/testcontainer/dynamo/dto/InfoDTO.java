@@ -3,6 +3,7 @@ package com.testcontainer.dynamo.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -14,7 +15,8 @@ public class InfoDTO {
 
 	private List<String> directors;
 	@JsonProperty(value = "release_date")
-//	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDate releaseDate;
 	private Double rating;	
 	private List<String> genres;
