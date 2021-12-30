@@ -56,7 +56,7 @@ curl --location --request GET 'localhost:8080/api/v1/movie/2023/Movie title'
 
 ## Test Container
 
-It's necessary to add this dependency of **testcontainer** to run a docker container of **DynamoDB**. When run the unit tests, the context will create the container with the coniguration setted in tested environment. 
+It's necessary to add this dependency of **testcontainer** to run a docker container of **DynamoDB**. When run the unit tests, the context will create the container with the coniguration setted in test environment. 
 
 ```
 <!-- https://mvnrepository.com/artifact/org.testcontainers/junit-jupiter -->
