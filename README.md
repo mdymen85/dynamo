@@ -1,6 +1,6 @@
 # DynamoDB
 
-This project aims to help to know a little code about DynamoDB, to know how it works, and to introduce some concepts of **testcontainer** to create unit test with a docker image. To achive this I needed to use spring profile to add special configuration to test environment in **aplication.yml**:
+This project aims to help you to know a little code about DynamoDB, to know how it works, and to introduce some concepts of **testcontainer** to create unit test with a docker image. To achive this I needed to use spring profile to add special configuration to test environment. In file **aplication.yml** from test/resources i added:
 
 ```
 spring:
@@ -8,7 +8,7 @@ spring:
     active: test
 ```
 
-In order to use **DynamoDB** in spring I added the following dependency in pom.xml:
+Also, it is important to say that I needed to configure dummy **AWS_ACCESS_KEY** and **AWS_SECRET_ACCESS_KEY** and to use **DynamoDB** in spring I added the following dependency in pom.xml:
 
 ```
 <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-dynamodb -->
